@@ -1,21 +1,21 @@
 import { Camera, CameraType } from 'expo-camera';
-// import { useState } from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View , Image} from 'react-native';
+import { useRef, useState } from 'react';
+import { StyleSheet, TouchableOpacity, View} from 'react-native';
 import { StatusBar } from 'react-native';
 
-export default function Cam() {
+export default function Cam({navigation}) {
 
-  // const [captureImage, setCaptureImage] = useState<any>(null)
+const cameraRef = useRef(null);
+const [photo, setPhoto] = useState(null);
 
-
-
-// const __takePicture = async () => {
-//     if (!camera) return
-//     const photo = await camera.takePictureAsync()
-//     console.log(photo)
-//     setCaptureImage(photo)
-//   }
-
+const takePicture = async () => {
+  if (cameraRef.current) {
+    const options = { quality: 0.5, base64: true };
+    const data = await cameraRef.current.takePictureAsync(options);
+    console.log(setPhoto(data.uri));
+    // Navigation.navigate('Gallery')
+  }
+};
 
 
   return (
@@ -23,11 +23,17 @@ export default function Cam() {
       <View style={styles.camTopCont}>
 
       </View>
-      <Camera  style={styles.camera} type={CameraType.back}></Camera>
+      <Camera  style={styles.camera} type={CameraType.back} 
+      ref={cameraRef} 
+      ></Camera>
       <View style={styles.camBotCont}>
-        <View style={styles.previewImg}></View>    
+        <View style={styles.previewImg}>
+        {/* {photo && <Image source={{ uri: photo }} style={styles.photo} />} */}
+          </View>    
 
-        <TouchableOpacity style={styles.captureBut}></TouchableOpacity>
+        <TouchableOpacity style={styles.captureBut} 
+        onPress={takePicture}
+        ></TouchableOpacity>
 
         <View style={styles.allImg}></View>
       </View>
@@ -80,3 +86,4 @@ const styles = StyleSheet.create({
     borderRadius: 10
   }
 });
+
